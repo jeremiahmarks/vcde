@@ -28,6 +28,9 @@ class surveyLineItem():
 		self.lineOfService = lineData['LOS']
 
 class PetmLocation():
+	"""The PetmLocation class is designed to hold all of the SRs associated 
+	with one location and to keep track of the oldest SR at that location.
+	"""
 	def __init__(self, siteNumber):
 		self.siteNum = siteNumber
 		self.oldestSR = datetime.date.today()
