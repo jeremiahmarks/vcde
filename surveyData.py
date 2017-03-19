@@ -18,6 +18,9 @@ CSVSuffix = "export?format=csv"
 fileStoragePath = "C:////Users//Jeremiah//Desktop//tout.csv"
 
 class surveyLineItem():
+	"""The surveyLineItem class is designed to parse text into meaningful
+	types as well as to hold the information.
+	"""
 	def __init__(self, lineData):
 		self.sr = lineData['SR Num']
 		self.dateComplete = datetime.datetime.strptime(lineData ['Complete Date'], '%m/%d/%y').date()
