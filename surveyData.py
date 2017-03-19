@@ -17,6 +17,25 @@ spreadsheetURL = ""
 CSVSuffix = "export?format=csv"
 fileStoragePath = "C:////Users//Jeremiah//Desktop//tout.csv"
 
+class surveyLineItem():
+	def __init__(self, lineData):
+		self.sr = lineData['SR Num']
+		self.dateComplete = datetime.datetime.strptime(lineData ['Complete Date'], '%m/%d/%y').date()
+		self.siteNumber = int(lineData ['Site #'])
+		self.lineOfService = lineData['LOS']
+
+class PetmLocation():
+	def __init__(self, siteNumber):
+		self.siteNum = siteNumber
+		self.oldestSR = datetime.date.today()
+		self.allSRs = []
+
+	def addSurvey(self, surveyLineItem):
+		if surveyLineItem.dateComplete < self.oldestSR:
+			self.oldestSR = surveyLineItem.dateComplete
+		self.allSRs.append(surveyLineItem)
+
+
 
 def getDocument():
 	spreadsheetURL = str(raw_input("Please enter the URL:\n"))
