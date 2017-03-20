@@ -6,6 +6,22 @@
 #controls which control IE to page through the options. 
 
 # temporaryTestingURL="https://docs.google.com/spreadsheets/d/1ELFMvDBhuROF9nMKpvMHQT8jLwOuvDIOUy1_hxYsda8/edit?usp=sharing"
+
+
+###########
+# Basic idea of logic flow:
+	# Download spreadsheet as CSV
+	# group surveys by site number
+	# find site with oldest surveys
+	# if phone rep has more than 10 surveys
+	# 	Next phone rep
+	# if there is another rep:
+	# 	Assign to phone rep
+	# 	repeat
+	# else
+	# 	end
+#####
+
 import requests
 import csv
 from collections import defaultdict 
@@ -44,9 +60,10 @@ class PetmLocation():
 class surveyPresenter():
 	"""This class will hold which surveys who is doing.
 	"""
-	def __init__(self, name):
+	def __init__(self, name, maxSurveys=10):
 		self.name = name
 		self.surveyQueue = []
+		self.maxSurveys = 10
 
 
 def getDocument():
