@@ -70,6 +70,12 @@ class surveyPresenter():
 		self.maxSurveys = 10
 		self.sites=[]
 
+	def groupSingles(self):
+		"""This method will group all of the sites that
+		only have one SR.
+		"""
+		pass
+
 def downloadAndGroupBySite(spreadsheetURL):
 	lastSlash = spreadsheetURL.rfind("/")
 	csvDownloadUrl = spreadsheetURL[:lastSlash+1] + CSVSuffix
@@ -95,13 +101,13 @@ def sortAndAssign(siteHolder, callers):
 				eachCaller.surveyQueue.append(eachsurvey)
 			eachCaller.sites.append(sortedHolder[0])
 			sortedHolder = sortedHolder[1:]
-	return callers
+	return callers, sortedHolder
 
 def test():
 	currentCallers = [surveyPresenter("Joe"), surveyPresenter("Jane"), surveyPresenter("Jacob")]
 	surveysGroupedBySite = downloadAndGroupBySite("https://docs.google.com/spreadsheets/d/1ELFMvDBhuROF9nMKpvMHQT8jLwOuvDIOUy1_hxYsda8/edit?usp=sharing")
-	currentCallers = sortAndAssign(surveysGroupedBySite, currentCallers)
-	return currentCallers
+	currentCallers, sortedRemains  = sortAndAssign(surveysGroupedBySite, currentCallers)
+	return currentCallers, sortedRemains
 
 
 def getDocument():
