@@ -24,6 +24,7 @@
 
 import requests
 import csv
+import datetime
 from collections import defaultdict 
 
 global CSVSuffix
@@ -69,11 +70,11 @@ def downloadAndProcess(spreadsheetURL):
 	lastSlash = spreadsheetURL.rfind("/")
 	csvDownloadUrl = spreadsheetURL[:lastSlash+1] + CSVSuffix
 	surveyData = requests.get(csvDownloadUrl)
-	with open(fileStoragePath, 'wb') as outfile:
+	with open(fileStoragePath, 'w') as outfile:
 		outfile.write(surveyData.text)
 		#In case you're wondering, "with" closes the file for me
 	siteHolder = {}
-	with open(fileStoragePath, 'rb') as infile:
+	with open(fileStoragePath, 'r') as infile:
 		csvReader = csv.DictReader(infile)
 		for eachline in csvReader:
 			thisline = surveyLineItem(dict(eachline))
