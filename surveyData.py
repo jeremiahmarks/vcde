@@ -65,6 +65,7 @@ class surveyPresenter():
 		self.name = name
 		self.surveyQueue = []
 		self.maxSurveys = 10
+		self.sites=[]
 
 def downloadAndGroupBySite(spreadsheetURL):
 	lastSlash = spreadsheetURL.rfind("/")
@@ -89,10 +90,15 @@ def sortAndAssign(siteHolder, callers):
 		while ( len(eachCaller.surveyQueue) < eachCaller.maxSurveys ):
 			for eachsurvey in sortedHolder[0].allSRs:
 				eachCaller.surveyQueue.append(eachsurvey)
+			eachCaller.sites.append(sortedHolder[0])
 			sortedHolder = sortedHolder[1:]
 	return callers
 
-
+def test():
+	currentCallers = [surveyPresenter("Joe"), surveyPresenter("Jane"), surveyPresenter("Jacob")]
+	surveysGroupedBySite = downloadAndGroupBySite("https://docs.google.com/spreadsheets/d/1ELFMvDBhuROF9nMKpvMHQT8jLwOuvDIOUy1_hxYsda8/edit?usp=sharing")
+	currentCallers = sortAndAssign(surveysGroupedBySite, currentCallers)
+	return currentCallers
 
 
 def getDocument():
