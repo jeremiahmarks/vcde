@@ -66,7 +66,7 @@ class surveyPresenter():
 		self.surveyQueue = []
 		self.maxSurveys = 10
 
-def downloadAndProcess(spreadsheetURL):
+def downloadAndGroupBySite(spreadsheetURL):
 	lastSlash = spreadsheetURL.rfind("/")
 	csvDownloadUrl = spreadsheetURL[:lastSlash+1] + CSVSuffix
 	surveyData = requests.get(csvDownloadUrl)
@@ -82,6 +82,18 @@ def downloadAndProcess(spreadsheetURL):
 				siteHolder[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
 			siteHolder[thisline.siteNumber].addSurvey(thisline)
 	return siteHolder
+
+def sortAndAssign(siteHolder, callers):
+	sortedHolder = sorted(list(siteHolder.values()), key=lambda site: site.oldestSR)
+	for eachCaller in callers:
+		while ( len(eachCaller.surveyQueue) < eachCaller.maxSurveys ):
+			for eachsurvey in sortedHolder[0].allSRs:
+				eachCaller.surveyQueue.append(eachsurvey)
+			sortedHolder = sortedHolder[1:]
+	return callers
+
+
+
 
 def getDocument():
 	spreadsheetURL = str(input("Please enter the URL:\n"))
