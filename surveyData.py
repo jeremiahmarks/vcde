@@ -41,6 +41,12 @@ class PetmLocation():
 			self.oldestSR = surveyLineItem.dateComplete
 		self.allSRs.append(surveyLineItem)
 
+class surveyPresenter():
+	"""This class will hold which surveys who is doing.
+	"""
+	def __init__(self, name):
+		self.name = name
+		self.surveyQueue = []
 
 
 def getDocument():
