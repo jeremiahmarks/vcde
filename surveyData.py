@@ -58,6 +58,9 @@ class PetmLocation():
 			self.oldestSR = surveyLineItem.dateComplete
 		self.allSRs.append(surveyLineItem)
 
+	def getSearchString(self):
+		return " OR ".join([sr.sr for sr in self.allSRs])
+
 class surveyPresenter():
 	"""This class will hold which surveys who is doing.
 	"""
