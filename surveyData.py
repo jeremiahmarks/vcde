@@ -65,6 +65,22 @@ class surveyPresenter():
 		self.surveyQueue = []
 		self.maxSurveys = 10
 
+def downloadAndProcess(spreadsheetURL):
+	lastSlash = spreadsheetURL.rfind("/")
+	csvDownloadUrl = spreadsheetURL[:lastSlash+1] + CSVSuffix
+	surveyData = requests.get(csvDownloadUrl)
+	with open(fileStoragePath, 'wb') as outfile:
+		outfile.write(a.text)
+		#In case you're wondering, "with" closes the file for me
+	siteHolder = {}
+	with open(fileStoragePath, 'rb') as infile:
+		csvReader = csv.DictReader(infile)
+		for eachline in csvReader:
+			thisline = surveyLineItem(dict(eachline))
+			if thisline.siteNumber not in siteHolder.keys():
+				siteHolder[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
+			siteHolder[thisline.siteNumber].addSurvey(thisline)
+	return siteHolder
 
 def getDocument():
 	spreadsheetURL = str(raw_input("Please enter the URL:\n"))
