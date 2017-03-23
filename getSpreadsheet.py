@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-22 23:05:48
+# @Last Modified time: 2017-03-22 23:42:44
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -126,10 +126,23 @@ def getNewestFile():
 	return surveysFile
 
 def trimDataAndGroup(listOfCSVLines):
+	"""This will remove unwanted data from the csv,
+	group the stores, then sort by sites with the oldest
+	SR
+	"""
+	#First a place to hold our sites while
+	#They're being sorted. Later we will 
+	#Convert to a list of sites sorted by
+	#Oldest SR
+	sitesWithSurveys={}
+
 	for eachline in listOfCSVLines:
 		thisline = surveyLineItem(eachline)
+		if thisline.siteNumber not in sitesWithSurveys.keys():
+			sitesWithSurveys[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
+		sitesWithSurveys[thisline.siteNumber].addSurvey(thisline)
+
+	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.daysSinceComplete, reverse=True)
 
 
-allRows = []
-for eachrow in surveysFile:
-	allRows.append(surveyLineItem(eachrow))
+
