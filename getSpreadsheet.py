@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-22 19:49:29
+# @Last Modified time: 2017-03-22 19:52:09
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -19,6 +19,50 @@
 import glob
 import datetime
 import pandas
+
+
+class surveyLineItem():
+	"""The surveyLineItem class is designed to parse text into meaningful
+	types as well as to hold the information.
+	"""
+	def __init__(self, lineData):
+		self.sr = lineData['SR Num']
+		self.dateComplete = datetime.datetime.strptime(lineData ['Complete Date'], '%m/%d/%y').date()
+		self.siteNumber = int(lineData ['Site #'])
+		self.lineOfService = lineData['LOS']
+
+class PetmLocation():
+	"""The PetmLocation class is designed to hold all of the SRs associated 
+	with one location and to keep track of the oldest SR at that location.
+	"""
+	def __init__(self, siteNumber):
+		self.siteNum = siteNumber
+		self.oldestSR = datetime.date.today()
+		self.allSRs = []
+
+	def addSurvey(self, surveyLineItem):
+		if surveyLineItem.dateComplete < self.oldestSR:
+			self.oldestSR = surveyLineItem.dateComplete
+		self.allSRs.append(surveyLineItem)
+
+	def getSearchString(self):
+		return " OR ".join([sr.sr for sr in self.allSRs])
+
+class surveyPresenter():
+	"""This class will hold which surveys who is doing.
+	"""
+	def __init__(self, name, maxSurveys=10):
+		self.name = name
+		self.surveyQueue = []
+		self.maxSurveys = 10
+		self.sites=[]
+
+	def groupSingles(self):
+		"""This method will group all of the sites that
+		only have one SR.
+		"""
+		pass
+
 
 fileSearchString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations/Jobscomplete_Wo_Survey_Scottsdale_*"
 strpFormatString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations\\Jobscomplete_Wo_Survey_Scottsdale_%m.%d.%Y_at_%H.%M.xlsx"
