@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-22 19:52:09
+# @Last Modified time: 2017-03-22 19:57:38
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -27,9 +27,14 @@ class surveyLineItem():
 	"""
 	def __init__(self, lineData):
 		self.sr = lineData['SR Num']
-		self.dateComplete = datetime.datetime.strptime(lineData ['Complete Date'], '%m/%d/%y').date()
 		self.siteNumber = int(lineData ['Site #'])
-		self.lineOfService = lineData['LOS']
+		self.state = lineData['State']
+		self.tz = lineData['Time Zone']
+		self.los = lineData['LOS']
+		self.daysSinceComplete = int(lineData['Days passed since Completed'])
+		self.caller = lineData['Caller Name']
+		self.crm = lineData['CRM']
+
 
 class PetmLocation():
 	"""The PetmLocation class is designed to hold all of the SRs associated 
