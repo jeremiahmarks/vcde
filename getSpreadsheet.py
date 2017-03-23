@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-22 23:42:44
+# @Last Modified time: 2017-03-22 23:54:07
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -29,6 +29,9 @@ columnsToAdd = ["Name", "Completed", "Siebel Search String"]
 columnsInOriginalFile = ["SR Num", "Site #", "State", "Time Zone", "LOS", "Days passed since Completed", "Caller Name", "CRM"]
 allColumns = columnsToAdd + columnsInOriginalFile
 
+#A List of CSRs. This could be changed later
+#to a file with one name per line
+CSRs = ["John", "Ringo", "Alice", "Bob", "Jen", "Stan", "Fred", "Barney"]
 
 class surveyLineItem():
 	"""The surveyLineItem class is designed to parse text into meaningful
@@ -144,5 +147,17 @@ def trimDataAndGroup(listOfCSVLines):
 
 	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.daysSinceComplete, reverse=True)
 
+#Todo:
+	# Create vixxoReps
+	# Assign reps to each line
+	# output to csv
+	# Change trimDataAndGroup to not include SRs over the max age
+	# Update the surveyLineItem who's assigned to it
+	# Give the vixxoCSR a way to sort their SRs into groups of single/multiple survey per site
 
+
+#Far in the future to do:
+	# use requests to log in to the google docs account
+	# count the stats
+	# generate the body of the email for copy paste ease
 
