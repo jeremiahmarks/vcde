@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-22 19:57:38
+# @Last Modified time: 2017-03-22 20:02:24
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -31,7 +31,12 @@ class surveyLineItem():
 		self.state = lineData['State']
 		self.tz = lineData['Time Zone']
 		self.los = lineData['LOS']
-		self.daysSinceComplete = int(lineData['Days passed since Completed'])
+		try:
+			self.daysSinceComplete = int(lineData['Days passed since Completed'])
+		except Exception as e:
+			self.daysSinceComplete = lineData['Days passed since Completed']
+
+		
 		self.caller = lineData['Caller Name']
 		self.crm = lineData['CRM']
 
@@ -88,3 +93,6 @@ for eachfile in matchingFiles:
 
 surveysFile = pandas.read_excel(newestFile).to_dict(orient='records')
 
+allRows = []
+for eachrow in surveysFile:
+	allRows.append(surveyLineItem(eachrow))
