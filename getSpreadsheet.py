@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-23 19:08:47
+# @Last Modified time: 2017-03-23 19:11:40
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -101,7 +101,7 @@ class vixxoCSR():
 	def __init__(self, name, maxSurveys=10):
 		self.name = name
 		self.surveyQueue = []
-		self.maxSurveys = 10
+		self.maxSurveys = maxSurveys
 		self.sites=[]
 
 	def groupSingles(self):
