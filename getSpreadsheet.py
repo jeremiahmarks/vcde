@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-22 23:54:07
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-03-23 19:08:47
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -92,7 +92,7 @@ class PetmLocation():
 		for eachsr in self.allSRs:
 			eachsr.searchString = searchString
 			storesCSVLines.append(eachsr.getCSVRepresentation())
-		return storesLines
+		return storesCSVLines
 
 
 class vixxoCSR():
@@ -145,7 +145,21 @@ def trimDataAndGroup(listOfCSVLines):
 			sitesWithSurveys[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
 		sitesWithSurveys[thisline.siteNumber].addSurvey(thisline)
 
-	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.daysSinceComplete, reverse=True)
+	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.oldestSR, reverse=True)
+
+def assignSurveys(listOfSurveys, vixxoReps):
+	"""This method will accept a list of surveys - basically the CSV
+	and a list of vixxo reps.  It will then assign the surveys to the
+	reps based on their maximum number of surveys.
+	"""
+	for eachRep in vixxoReps:
+		while (len(eachRep.surveyQueue) < eachRep.maxSurveys):
+			for eachSurvey in listOfSurveys[0].allSRs:
+				eachRep.surveyQueue.append(eachSurvey)
+			eachRep.sites.append(listOfSurveys[0])
+			listOfSurveys = listOfSurveys[1:]
+	return listOfSurveys, vixxoReps
+
 
 #Todo:
 	# Create vixxoReps
