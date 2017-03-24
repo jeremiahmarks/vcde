@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-23 22:22:37
+# @Last Modified time: 2017-03-23 23:29:46
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -77,6 +77,7 @@ class PetmLocation():
 		self.siteNum = siteNumber
 		self.oldestSR = 0
 		self.allSRs = []
+		self.csrName=''
 
 	def addSurvey(self, surveyLineItem):
 		if surveyLineItem.daysSinceComplete > self.oldestSR:
@@ -86,11 +87,13 @@ class PetmLocation():
 	def getSearchString(self):
 		return " OR ".join([sr.sr for sr in self.allSRs])
 
+
 	def getCSVLines(self):
 		storesCSVLines = []
 		searchString = self.getSearchString()
 		for eachsr in self.allSRs:
 			eachsr.searchString = searchString
+			eachsr.name=self.csrName
 			storesCSVLines.append(eachsr.getCSVRepresentation())
 		return storesCSVLines
 
@@ -109,6 +112,12 @@ class vixxoCSR():
 		only have one SR.
 		"""
 		self.sites.sort(key=lambda site : len(site.allSRs))
+
+	def getCSVLines(self):
+		csvLines = []
+		for eachSite in self.sites:
+			csvLines = csvLines + eachSite.getCSVLines()
+		return csvLines
 
 
 
@@ -155,6 +164,7 @@ def assignSurveys(listOfSites, vixxoReps):
 	"""
 	for eachRep in vixxoReps:
 		while (len(eachRep.surveyQueue) < eachRep.maxSurveys):
+			listOfSites[0].csrName = eachRep.name
 			for eachSurvey in listOfSites[0].allSRs:
 				eachRep.surveyQueue.append(eachSurvey)
 			eachRep.sites.append(listOfSites[0])
@@ -169,6 +179,19 @@ def getAgents():
 	"""
 	return [vixxoCSR(rep) for rep in CSRs]
 	#Heck yeah, remembered list comprehensions
+
+def main():
+	"""This is the script that puts everything
+	together.
+	"""
+	agents=getAgents()
+	surveysFile = getNewestFile()
+	sortedSites = trimDataAndGroup(surveysFile)
+	sortedSites, agents = assignSurveys(sortedSites, agents)
+	csvFile = []
+	for eachAgent in agents:
+		csvFile = csvFile + eachAgent.getCSVLines()
+	# with open(pathToDesktop) as outfile:
 
 
 
