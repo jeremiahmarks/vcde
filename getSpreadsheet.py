@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-23 19:08:47
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-03-23 22:22:37
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -108,7 +108,8 @@ class vixxoCSR():
 		"""This method will group all of the sites that
 		only have one SR.
 		"""
-		pass
+		self.sites.sort(key=lambda site : len(site.allSRs))
+
 
 
 
@@ -147,18 +148,28 @@ def trimDataAndGroup(listOfCSVLines):
 
 	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.oldestSR, reverse=True)
 
-def assignSurveys(listOfSurveys, vixxoReps):
-	"""This method will accept a list of surveys - basically the CSV
+def assignSurveys(listOfSites, vixxoReps):
+	"""This method will accept a list of sites with surveys
 	and a list of vixxo reps.  It will then assign the surveys to the
 	reps based on their maximum number of surveys.
 	"""
 	for eachRep in vixxoReps:
 		while (len(eachRep.surveyQueue) < eachRep.maxSurveys):
-			for eachSurvey in listOfSurveys[0].allSRs:
+			for eachSurvey in listOfSites[0].allSRs:
 				eachRep.surveyQueue.append(eachSurvey)
-			eachRep.sites.append(listOfSurveys[0])
-			listOfSurveys = listOfSurveys[1:]
-	return listOfSurveys, vixxoReps
+			eachRep.sites.append(listOfSites[0])
+			listOfSites = listOfSites[1:]
+	return listOfSites, vixxoReps
+
+def getAgents():
+	"""For now I am going to use the list of
+	agents at the top of the screen. I will 
+	likely either create and import a simple
+	module or a plain text file.
+	"""
+	return [vixxoCSR(rep) for rep in CSRs]
+	#Heck yeah, remembered list comprehensions
+
 
 
 #Todo:
