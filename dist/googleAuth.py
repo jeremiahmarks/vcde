@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-03-24 22:56:46
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-25 12:15:46
+# @Last Modified time: 2017-03-25 14:35:14
 
 
 from __future__ import print_function
@@ -65,6 +65,22 @@ def getapiService():
     service = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
     return service
 
+def addSpreadsheet(api_service, title=None):
+    requestBody = {}
+    if title:
+        requestBody['title'] = title
+    request = api_service.spreadsheets().create(requestBody)
+    response = request.execute()
+    return response['spreadsheetId']
+
+def add_lines_to_spreadsheet(api_service, spreadsheetId, values):
+    range_ = 'A1'
+    value_input_option = 'RAW' 
+    insert_data_option = 'OVERWRITE'
+    value_range_body = {
+        'values' : values
+    # TODO: Add desired ent
+    }
 
 
 def main():
