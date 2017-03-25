@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-24 18:41:23
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-03-24 21:48:20
 
 
 #This script will find the most recent spreadsheet with 
@@ -21,10 +21,6 @@ import glob
 import datetime
 import pandas
 
-#Since I am too lazy to figure out how to convert 
-#the data into a pandas dataframe and then write
-#that to a csv, we're just going straight there. 
-import csv
 
 #Provide strings to represent path to file and parsing instructions
 fileSearchString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations/Jobscomplete_Wo_Survey_Scottsdale_*"
