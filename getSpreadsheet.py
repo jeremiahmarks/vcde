@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-24 21:48:20
+# @Last Modified time: 2017-03-25 14:17:27
 
 
 #This script will find the most recent spreadsheet with 
@@ -32,7 +32,9 @@ columnsInOriginalFile = ["SR Num", "Site #", "State", "Time Zone", "LOS", "Days 
 allColumns = columnsToAdd + columnsInOriginalFile
 
 #Adding a temporary path for the output file. 
-dpath = "C:\\Users\\Jemarks\\Desktop\\newfile.csv"
+# dpath = "C:\\Users\\Jemarks\\Desktop\\newfile.csv"
+dpath = "C:\\Users\\Jeremiah\\Desktop\\newfile.csv"
+inputfile = "C:\\Users\\Jeremiah\\Desktop\\testInput.xlsx"
 
 #A List of CSRs. This could be changed later
 #to a file with one name per line
@@ -136,12 +138,13 @@ class vixxoCSR():
 def getNewestFile():
 	#This will return a list of dicts, basically like
 	#using csv.DictReader to read into a list.
-	matchingFiles = glob.glob(fileSearchString)
+	# matchingFiles = glob.glob(fileSearchString)
 
-	newestFile = matchingFiles[0]
-	for eachfile in matchingFiles:
-		if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
-			newestFile = eachfile
+	# newestFile = matchingFiles[0]
+	# for eachfile in matchingFiles:
+	# 	if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
+	# 		newestFile = eachfile
+	newestFile = inputfile
 
 	surveysFile = pandas.read_excel(newestFile).to_dict(orient='records')
 
@@ -203,12 +206,18 @@ def main():
 	sortedSites, agents = assignSurveys(sortedSites, agents)
 	csvFile = []
 	for eachAgent in agents:
-		csvFile = csvFile + eachAgent.getCSVLines()
+		theselines = eachAgent.getCSVLines()
+		for eachline in theselines:
+			csvLine = [eachline[column] for column in allColumns]
+			csvFile.append(csvLine)
 	for eachSite in sortedSites:
-		csvFile = csvFile + eachSite.getCSVLines()
-	csvFile = pandas.DataFrame(csvFile)
-	csvFile.to_csv(dpath, columns=allColumns, index=False)
-	# return csvFile
+		theselines = eachSite.getCSVLines()
+		for eachline in theselines:
+			csvLine = [eachline[column] for column in allColumns]
+			csvFile.append(csvLine)
+	# csvFile = pandas.DataFrame(csvFile)
+	# csvFile.to_csv(dpath, columns=allColumns, index=False)
+	return csvFile
 	# with open(pathToDesktop) as outfile:
 
 
