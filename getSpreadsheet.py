@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-24 18:10:46
+# @Last Modified time: 2017-03-24 18:41:23
 
 
 #This script will find the most recent spreadsheet with 
@@ -74,7 +74,7 @@ class surveyLineItem():
 		csvReturn['CRM'] = str(self.crm)
 		csvReturn['Name'] = str(self.name)
 		csvReturn['Completed'] = ""
-		csvReturn['searchString'] = self.searchString
+		csvReturn['Siebel Search String'] = self.searchString
 		return csvReturn
 
 
@@ -164,6 +164,8 @@ def trimDataAndGroup(listOfCSVLines):
 
 	for eachline in listOfCSVLines:
 		thisline = surveyLineItem(eachline)
+		if thisline.daysSinceComplete >=7:
+			continue
 		if thisline.siteNumber not in sitesWithSurveys.keys():
 			sitesWithSurveys[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
 		sitesWithSurveys[thisline.siteNumber].addSurvey(thisline)
@@ -182,6 +184,8 @@ def assignSurveys(listOfSites, vixxoReps):
 				eachRep.surveyQueue.append(eachSurvey)
 			eachRep.sites.append(listOfSites[0])
 			listOfSites = listOfSites[1:]
+			if len(listOfSites) == 0:
+				break
 	return listOfSites, vixxoReps
 
 def getAgents():
@@ -207,7 +211,7 @@ def main():
 	for eachSite in sortedSites:
 		csvFile = csvFile + eachSite.getCSVLines()
 	csvFile = pandas.DataFrame(csvFile)
-	csvFile.to_csv(dpath, columns=allColumns)
+	csvFile.to_csv(dpath, columns=allColumns, index=False)
 	# return csvFile
 	# with open(pathToDesktop) as outfile:
 
