@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-03-21 17:48:30
-<<<<<<< HEAD
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-23 19:14:15
-=======
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-23 23:29:46
->>>>>>> origin/master
+# @Last Modified time: 2017-03-24 18:10:46
+
 
 #This script will find the most recent spreadsheet with 
 #needed surveys and then download it to the users desktop
@@ -25,6 +21,11 @@ import glob
 import datetime
 import pandas
 
+#Since I am too lazy to figure out how to convert 
+#the data into a pandas dataframe and then write
+#that to a csv, we're just going straight there. 
+import csv
+
 #Provide strings to represent path to file and parsing instructions
 fileSearchString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations/Jobscomplete_Wo_Survey_Scottsdale_*"
 strpFormatString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations\\Jobscomplete_Wo_Survey_Scottsdale_%m.%d.%Y_at_%H.%M.xlsx"
@@ -33,6 +34,9 @@ strpFormatString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations\\Jobsc
 columnsToAdd = ["Name", "Completed", "Siebel Search String"]
 columnsInOriginalFile = ["SR Num", "Site #", "State", "Time Zone", "LOS", "Days passed since Completed", "Caller Name", "CRM"]
 allColumns = columnsToAdd + columnsInOriginalFile
+
+#Adding a temporary path for the output file. 
+dpath = "C:\\Users\\Jemarks\\Desktop\\newfile.csv"
 
 #A List of CSRs. This could be changed later
 #to a file with one name per line
@@ -200,7 +204,13 @@ def main():
 	csvFile = []
 	for eachAgent in agents:
 		csvFile = csvFile + eachAgent.getCSVLines()
+	for eachSite in sortedSites:
+		csvFile = csvFile + eachSite.getCSVLines()
+	csvFile = pandas.DataFrame(csvFile)
+	csvFile.to_csv(dpath, columns=allColumns)
+	# return csvFile
 	# with open(pathToDesktop) as outfile:
+
 
 
 
