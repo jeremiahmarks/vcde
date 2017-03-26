@@ -1,24 +1,13 @@
 # -*- coding: utf-8 -*-
-# @Author: jemarks
-# @Date:   2017-03-21 17:48:30
+# @Author: Jeremiah
+# @Date:   2017-03-25 14:40:15
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-25 14:17:27
-
-
-#This script will find the most recent spreadsheet with 
-#needed surveys and then download it to the users desktop
-#
-#Filename template:
-	#Jobscomplete_Wo_Survey_Scottsdale_MM.DD.YYYY_at_HH.MM.xlsx
-#
-#folder path
-	#//bos-mart.ip-tech.com/FSNPublishedReports/Operations/
-
-
+# @Last Modified time: 2017-03-26 11:01:18
 
 #glob exists to match file names
 import glob
 import datetime
+import os
 import pandas
 
 
@@ -26,19 +15,29 @@ import pandas
 fileSearchString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations/Jobscomplete_Wo_Survey_Scottsdale_*"
 strpFormatString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations\\Jobscomplete_Wo_Survey_Scottsdale_%m.%d.%Y_at_%H.%M.xlsx"
 
+
 #Provide list of needed and existing columns
 columnsToAdd = ["Name", "Completed", "Siebel Search String"]
 columnsInOriginalFile = ["SR Num", "Site #", "State", "Time Zone", "LOS", "Days passed since Completed", "Caller Name", "CRM"]
 allColumns = columnsToAdd + columnsInOriginalFile
 
+#Set up for local storage
+home_dir = os.path.expanduser('~')
+vixxoUploadDirectory = os.path.join(home_dir, 'surveyMagic')
+if not os.path.exists(vixxoUploadDirectory):
+	os.makedirs(vixxoUploadDirectory)
+
 #Adding a temporary path for the output file. 
 # dpath = "C:\\Users\\Jemarks\\Desktop\\newfile.csv"
-dpath = "C:\\Users\\Jeremiah\\Desktop\\newfile.csv"
+surveyOutFilename = "SurveyOutList" + datetime.date.strftime(datetime.date.today(), '%d%B%Y') + ".csv"
+pathToSurveyedOut = os.path.join(vixxoUploadDirectory, surveyOutFilename)
 inputfile = "C:\\Users\\Jeremiah\\Desktop\\testInput.xlsx"
+
 
 #A List of CSRs. This could be changed later
 #to a file with one name per line
 CSRs = ["John", "Ringo", "Alice", "Bob", "Jen", "Stan", "Fred", "Barney"]
+
 
 class surveyLineItem():
 	"""The surveyLineItem class is designed to parse text into meaningful
@@ -131,10 +130,6 @@ class vixxoCSR():
 		for eachSurvey in self.surveyQueue:
 			eachSurvey.name = self.name
 
-
-
-
-#First Thing - Find the most recent file
 def getNewestFile():
 	#This will return a list of dicts, basically like
 	#using csv.DictReader to read into a list.
@@ -160,16 +155,31 @@ def trimDataAndGroup(listOfCSVLines):
 	#Convert to a list of sites sorted by
 	#Oldest SR
 	sitesWithSurveys={}
-
+	surveys_to_close=[]
 	for eachline in listOfCSVLines:
 		thisline = surveyLineItem(eachline)
 		if thisline.daysSinceComplete >=7:
+			surveys_to_close.append(thisline.getCSVRepresentation())
 			continue
 		if thisline.siteNumber not in sitesWithSurveys.keys():
 			sitesWithSurveys[thisline.siteNumber] = PetmLocation(thisline.siteNumber)
 		sitesWithSurveys[thisline.siteNumber].addSurvey(thisline)
 
+	csvFile = pandas.DataFrame(surveys_to_close)
+	csvFile.to_csv(pathToSurveyedOut, columns=allColumns, index=False)
+
 	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.oldestSR, reverse=True)
+
+def collectEmailStats(listOfSites):
+	"""Note that this needs to be done
+	before assigning the surveys since 
+	that shrinks the list
+	"""
+	total_surveys = sum([len(site.allSRs) for site in listOfSites])
+	surveys_older_than_one = 0
+	for eachSite in listOfSites:
+		surveys_older_than_one +=(len([survey for survey in eachSite.allSRs if survey.daysSinceComplete > 1]))
+	return total_surveys, surveys_older_than_one
 
 def assignSurveys(listOfSites, vixxoReps):
 	"""This method will accept a list of sites with surveys
@@ -193,47 +203,39 @@ def getAgents():
 	likely either create and import a simple
 	module or a plain text file.
 	"""
-	return [vixxoCSR(rep) for rep in CSRs]
+	# return [vixxoCSR(rep) for rep in CSRs]
+
+	with open("names.txt", 'r') as infile:
+		names = [vixxoCSR(line) for line in infile if line[0] is not '#']
+	return names
 	#Heck yeah, remembered list comprehensions
 
-def main():
-	"""This is the script that puts everything
-	together.
-	"""
-	agents=getAgents()
-	surveysFile = getNewestFile()
-	sortedSites = trimDataAndGroup(surveysFile)
-	sortedSites, agents = assignSurveys(sortedSites, agents)
+
+
+def combine_to_csv(surveysFile, agents):
 	csvFile = []
+	csvFile.append(allColumns)
 	for eachAgent in agents:
 		theselines = eachAgent.getCSVLines()
 		for eachline in theselines:
 			csvLine = [eachline[column] for column in allColumns]
 			csvFile.append(csvLine)
-	for eachSite in sortedSites:
+	for eachSite in surveysFile:
 		theselines = eachSite.getCSVLines()
 		for eachline in theselines:
 			csvLine = [eachline[column] for column in allColumns]
 			csvFile.append(csvLine)
-	# csvFile = pandas.DataFrame(csvFile)
-	# csvFile.to_csv(dpath, columns=allColumns, index=False)
 	return csvFile
-	# with open(pathToDesktop) as outfile:
 
 
+def getEmail(total_surveys, total_old_surveys, spreadsheet_link):
+	return """
+Hello,
+We have a total of %s surveys, %s are over 1 day old. Everyone has surveys assigned to them, they need to be done by 2pm today.
 
+%s
 
-#Todo:
-	# Create vixxoReps
-	# Assign reps to each line
-	# output to csv
-	# Change trimDataAndGroup to not include SRs over the max age
-	# Update the surveyLineItem who's assigned to it
-	# Give the vixxoCSR a way to sort their SRs into groups of single/multiple survey per site
+Please let me know if you have any questions,
 
-
-#Far in the future to do:
-	# use requests to log in to the google docs account
-	# count the stats
-	# generate the body of the email for copy paste ease
-
+Thank you!
+""" % (total_surveys, total_old_surveys, spreadsheet_link)
