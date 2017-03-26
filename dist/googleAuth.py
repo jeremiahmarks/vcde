@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-03-24 22:56:46
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-25 14:35:14
+# @Last Modified time: 2017-03-25 16:33:27
 
 
 from __future__ import print_function
@@ -55,7 +55,7 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def getapiService():
+def getSheetService():
     """Gets and returns the basic service for use in other methods
     or via the interactive command prompt
     """
@@ -65,13 +65,19 @@ def getapiService():
     service = discovery.build('sheets', 'v4', http=http, discoveryServiceUrl=discoveryUrl)
     return service
 
+def get_drive_service():
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('drive', 'v3', http=http)
+    return service
+
 def addSpreadsheet(api_service, title=None):
     requestBody = {}
     if title:
-        requestBody['title'] = title
-    request = api_service.spreadsheets().create(requestBody)
+        requestBody['properties'] = {'title': title}
+    request = api_service.spreadsheets().create(body= requestBody)
     response = request.execute()
-    return response['spreadsheetId']
+    return response
 
 def add_lines_to_spreadsheet(api_service, spreadsheetId, values):
     range_ = 'A1'
@@ -79,8 +85,20 @@ def add_lines_to_spreadsheet(api_service, spreadsheetId, values):
     insert_data_option = 'OVERWRITE'
     value_range_body = {
         'values' : values
-    # TODO: Add desired ent
+    
     }
+    result = api_service.spreadsheets().values().append(
+        spreadsheetId = spreadsheetId, range=range_,
+        valueInputOption = value_input_option, body=value_range_body).execute()
+    return result
+
+def shareDocument(spreadsheetId):
+    service = get_drive_service()
+    bodyData = {'role': 'writer', 'type': 'anyone'}
+    result = service.permissions().create(fileId=spreadsheetId, body=bodyData)
+    return result
+
+
 
 
 def main():
