@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-25 14:40:15
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-26 11:01:18
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-03-27 18:55:58
 
 #glob exists to match file names
 import glob
 import datetime
 import os
 import pandas
-
+import urllib
 
 #Provide strings to represent path to file and parsing instructions
 fileSearchString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations/Jobscomplete_Wo_Survey_Scottsdale_*"
 strpFormatString = "//bos-mart.ip-tech.com/FSNPublishedReports/Operations\\Jobscomplete_Wo_Survey_Scottsdale_%m.%d.%Y_at_%H.%M.xlsx"
 
+#This is the string to pass to the command line for the email
+outlookPath = '"C:\\Program Files\\Microsoft Office\\Office15\\Outlook.exe"'
+outlookCreateFlag = "/c ipm.note"
+outlookEmailAddress = "PetSmart-Scottsdale@fusionmethod.com"
 
 #Provide list of needed and existing columns
 columnsToAdd = ["Name", "Completed", "Siebel Search String"]
@@ -133,13 +137,13 @@ class vixxoCSR():
 def getNewestFile():
 	#This will return a list of dicts, basically like
 	#using csv.DictReader to read into a list.
-	# matchingFiles = glob.glob(fileSearchString)
+	matchingFiles = glob.glob(fileSearchString)
 
-	# newestFile = matchingFiles[0]
-	# for eachfile in matchingFiles:
-	# 	if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
-	# 		newestFile = eachfile
-	newestFile = inputfile
+	newestFile = matchingFiles[0]
+	for eachfile in matchingFiles:
+		if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
+			newestFile = eachfile
+	# newestFile = inputfile
 
 	surveysFile = pandas.read_excel(newestFile).to_dict(orient='records')
 
@@ -227,6 +231,20 @@ def combine_to_csv(surveysFile, agents):
 			csvFile.append(csvLine)
 	return csvFile
 
+def createEmail(total_surveys, total_old_surveys, spreadsheet_link):
+	"""This method exists to create the surveys email
+	"""
+	outlookString = ""
+	outlookString += outlookPath + " "
+	outlookString += outlookCreateFlag + " "
+	outlookString += '/m "' + outlookEmailAddress
+	outlookString += "&subject=Todays%20Survey%20Report&body="
+	outlookString += urllib.parse.quote(getEmail(total_surveys, total_old_surveys, spreadsheet_link)) + '"'
+	print (outlookString)
+	os.popen(outlookString)
+
+
+	# emailString = """  /m "jeremiah@jlmarks.org&subject=This%20Subject&body=%0AHello%2C%0AWe+have+a+total+of+1+surveys%2C+2+are+over+1+day+old.+Everyone+has+surveys+assigned+to+them%2C+they+need+to+be+done+by+2pm+today.%0A%0A3%0A%0APlease+let+me+know+if+you+have+any+questions%2C%0A%0AThank+you%21%0A" """
 
 def getEmail(total_surveys, total_old_surveys, spreadsheet_link):
 	return """
