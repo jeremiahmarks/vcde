@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-24 22:56:46
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-27 18:51:57
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-03-27 21:37:39
 
 
 from __future__ import print_function
@@ -23,8 +23,9 @@ except ImportError:
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/drive-python-quickstart.json
 SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
-CLIENT_SECRET_FILE = 'C:\\Users\\jemarks\\Desktop\\VixxoCode\\VixxoCode\\clientid.json'
 APPLICATION_NAME = 'vixxoUploader'
+CLIENT_SECRET_FILE = os.path.join(os.path.join(os.path.expanduser('~'), 'surveyMagic'), 'clientid.json')
+
 
 
 def get_credentials():
