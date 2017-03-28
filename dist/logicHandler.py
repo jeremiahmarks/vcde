@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-25 14:40:15
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-27 18:55:58
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-03-27 21:41:06
 
 #glob exists to match file names
 import glob
@@ -35,7 +35,6 @@ if not os.path.exists(vixxoUploadDirectory):
 # dpath = "C:\\Users\\Jemarks\\Desktop\\newfile.csv"
 surveyOutFilename = "SurveyOutList" + datetime.date.strftime(datetime.date.today(), '%d%B%Y') + ".csv"
 pathToSurveyedOut = os.path.join(vixxoUploadDirectory, surveyOutFilename)
-inputfile = "C:\\Users\\Jeremiah\\Desktop\\testInput.xlsx"
 
 
 #A List of CSRs. This could be changed later
@@ -143,7 +142,6 @@ def getNewestFile():
 	for eachfile in matchingFiles:
 		if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
 			newestFile = eachfile
-	# newestFile = inputfile
 
 	surveysFile = pandas.read_excel(newestFile).to_dict(orient='records')
 
@@ -240,7 +238,6 @@ def createEmail(total_surveys, total_old_surveys, spreadsheet_link):
 	outlookString += '/m "' + outlookEmailAddress
 	outlookString += "&subject=Todays%20Survey%20Report&body="
 	outlookString += urllib.parse.quote(getEmail(total_surveys, total_old_surveys, spreadsheet_link)) + '"'
-	print (outlookString)
 	os.popen(outlookString)
 
 
