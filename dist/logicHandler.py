@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-25 14:40:15
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-27 21:41:06
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-03-28 18:13:56
 
 #glob exists to match file names
 import glob
@@ -245,12 +245,13 @@ def createEmail(total_surveys, total_old_surveys, spreadsheet_link):
 
 def getEmail(total_surveys, total_old_surveys, spreadsheet_link):
 	return """
-Hello,
-We have a total of %s surveys, %s are over 1 day old. Everyone has surveys assigned to them, they need to be done by 2pm today.
-
+<p>Hello,</p>
+<p>We have a total of %s surveys, %s are over 1 day old. Everyone has surveys assigned to them, they need to be done by 2pm today.</p>
+</br></br>
+<p>
 %s
-
-Please let me know if you have any questions,
-
-Thank you!
+</p></br>
+<p>Please let me know if you have any questions,</p></br>
+</br>
+Thank you!</br>
 """ % (total_surveys, total_old_surveys, spreadsheet_link)
