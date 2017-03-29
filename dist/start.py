@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-25 15:23:07
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-03-27 21:45:14
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-03-28 18:08:53
 
 import googleAuth
 import logicHandler
+import sendOutlookEmail
+
 import datetime
 import os
 
@@ -39,7 +41,12 @@ def main():
 
 	# emailBody = logicHandler.getEmail(totalSRs, totalOldSRs, sheetURL)
 	print("Create Email")
-	logicHandler.createEmail(totalSRs, totalOldSRs, sheetURL)
+	# logicHandler.createEmail(totalSRs, totalOldSRs, sheetURL)
+	emailBody = logicHandler.getEmail(totalSRs, totalOldSRs, sheetURL)
+	emailToAddress = "Jeremiah.Marks@vixxo.com"
+	# emailToAddress = "PetSmart-Scottsdale@fusionmethod.com"
+	emailSubject = newEmailSubject
+	sendOutlookEmail.sendEmail(emailToAddress, emailSubject, emailBody)
 
 
 if __name__ == '__main__':
