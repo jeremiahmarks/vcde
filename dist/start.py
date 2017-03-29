@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-03-25 15:23:07
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-03-28 18:08:53
+# @Last Modified time: 2017-03-28 19:52:26
 
 import googleAuth
 import logicHandler
@@ -13,7 +13,7 @@ import os
 
 def main():
 	newDocTitle = "Survey Assignments " + datetime.date.strftime(datetime.date.today(), '%d%B%Y')
-	newEmailSubject = datetime.date.strftime(datetime.date.today(), '%d%B%Y') + " Survey Assignments"
+	newEmailSubject = datetime.date.strftime(datetime.date.today(), '%d %B %Y') + " Survey Assignments"
 
 	print("Get Agents")
 	agents = logicHandler.getAgents()
@@ -43,8 +43,8 @@ def main():
 	print("Create Email")
 	# logicHandler.createEmail(totalSRs, totalOldSRs, sheetURL)
 	emailBody = logicHandler.getEmail(totalSRs, totalOldSRs, sheetURL)
-	emailToAddress = "Jeremiah.Marks@vixxo.com"
-	# emailToAddress = "PetSmart-Scottsdale@fusionmethod.com"
+	# emailToAddress = "Jeremiah.Marks@vixxo.com"
+	emailToAddress = "PetSmart-Scottsdale@fusionmethod.com"
 	emailSubject = newEmailSubject
 	sendOutlookEmail.sendEmail(emailToAddress, emailSubject, emailBody)
 
