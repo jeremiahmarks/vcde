@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-04-02 17:08:01
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-04-02 17:12:40
+# @Last Modified time: 2017-04-02 17:27:15
 
 #This is more or less a direct rip off of a
 #module from a different directory just moved
@@ -19,6 +19,7 @@
 #Survey URLs have the pattern 
 #http://scportal.firstservicenetworks.com/Survey/Default.aspx?idx=?&SRNumber=SR_NUM&&Chain=PETM-US&&Site=SITE_NUM&&Agent=JEMARKS&&Date=MONTH%2fDAY%2fYEAR
 #The survey is in regular HTML thankfully, not ActiveX like the rest of Siebel
+import sys
 from urllib.parse import urlencode
 import datetime
 from selenium import webdriver
@@ -53,6 +54,15 @@ class SurveyCloser():
 			#that this runs
 			pass
 
+	def close_by_csv(self, pathToCSV):
+		with open(pathToCSV, 'r') as infile:
+			thisReader = csv.DictReader(infile)
+			row_number = 0
+			for eachrow in thisReader:
+				print (row_number)
+				row_number += 1
+				self.close_survey(eachrow)
+
 	def get_url(self, sr_num, site_num):
 		#Note that the SC number can be added back to this
 		#method if it is needed for the database
@@ -66,3 +76,7 @@ class SurveyCloser():
 
 		return self.BASE_URL + urlencode(payload)
 
+if __name__ == '__main__':
+	pathToCSV = sys.argv[1]
+	thisCloser = SurveyCloser()
+	thisCloser.close_by_csv(pathToCSV)
