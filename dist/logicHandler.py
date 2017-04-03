@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: Jeremiah
 # @Date:   2017-03-25 14:40:15
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-04-02 17:35:37
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-04-03 12:48:21
 
 #glob exists to match file names
 import glob
@@ -170,7 +170,7 @@ def trimDataAndGroup(listOfCSVLines):
 
 	csvFile = pandas.DataFrame(surveys_to_close)
 	csvFile.to_csv(pathToSurveyedOut, columns=allColumns, index=False)
-	subprocess.Popopen(["python", os.path.join(os.path.abspath(os.path.dirname(__file__)), "surveyCloser.py"), pathToSurveyedOut])
+	subprocess.Popen(["python", os.path.join(os.path.abspath(os.path.dirname(__file__)), "surveyCloser.py"), pathToSurveyedOut])
 	return sorted(list(sitesWithSurveys.values()), key=lambda site: site.oldestSR, reverse=True)
 
 def collectEmailStats(listOfSites):
