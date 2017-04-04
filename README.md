@@ -12,3 +12,7 @@ for Windows 64bit](https://www.continuum.io/downloads). Basically ensure that yo
 the installer for Python 3.6+ and 64-bit Windows.
 * Clone and extract this repo into a folder that you know where it is. 
 * Create a folder in your home directory named "surveyMagic"
+* Find a copy of the "clientid.json" file and put it in the surveyMagic folder
+* Open a command prompt (Win+r -> cmd -> run )
+* Run the command `pip install google-api-python-client`
+* Run the command 
