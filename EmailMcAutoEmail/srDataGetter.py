@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-05-11 19:23:37
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-11 20:00:18
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-05-11 23:37:52
 
 ####################
 ## Yes, it is python and I am using a Getter.
@@ -34,6 +34,27 @@ class FSNScraper(object):
 	def get_sr_details(self, srnumber):
 		sr_url = 'https://myfsn.biz/SC_Main/SC_SRDetail.aspx?AllowAnyTech=Y&srid=' + srnumber
 		self.bsr.open(sr_url)
-		print (self.bsr.parsed.getText().replace('\r', '').replace('\n', ''))
+		print (sr_url)
+		# TODO: add something regarding the javascript issue. Here is the 
+		# Relevant part of the page, and similar issue from stackoverflow that
+		# I can use to template my solution is below.
+		# '__doPostBack(\'ctl00$ContentPlaceHolder1$systemNotesCheckbox\',\'\')'
+		# function __doPostBack(eventTarget, eventArgument) {
+		#     if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+		#         theForm.__EVENTTARGET.value = eventTarget;
+		#         theForm.__EVENTARGUMENT.value = eventArgument;
+		#         theForm.submit();
+		#     }
+		# }
+
+
+		# http://stackoverflow.com/questions/27681731/python-requests-robobrowser-aspx-post-javascript
+		# b_e_arg = robobrowser.forms.fields.Input('\<input name="__EVENTARGUMENT" value="" \/\>')
+
+		# b_e_target = robobrowser.forms.fields.Input('\<input name="__EVENTTARGET" value="PhoneListsControl$MasterDataControl$masterList$_ctl0$SelectButton" \/\>')
+
+		# In [30]: form_find_b.add_field(b_e_target)
+		# In [31]: form_find_b.add_field(b_e_arg)
+
 
 
