@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-05-11 19:23:37
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-11 23:37:52
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-05-12 18:15:11
 
 ####################
 ## Yes, it is python and I am using a Getter.
@@ -14,6 +14,7 @@
 ## and parse out valuable information such as the service
 ## providers email address and notes left on the SR.
 from robobrowser import RoboBrowser
+import robobrowser
 
 class FSNScraper(object):
 	"""This module will exists in order to...
@@ -34,6 +35,13 @@ class FSNScraper(object):
 	def get_sr_details(self, srnumber):
 		sr_url = 'https://myfsn.biz/SC_Main/SC_SRDetail.aspx?AllowAnyTech=Y&srid=' + srnumber
 		self.bsr.open(sr_url)
+		this_value = 'ctl00$ContentPlaceHolder1$systemNotesCheckbox'
+		event_argument_field = robobrowser.forms.fields.Input('\<input name="__EVENTARGUMENT" value="" \/\>')
+		event_target_field = robobrowser.forms.fields.Input('\<input name="__EVENTTARGET" value="ctl00$ContentPlaceHolder1$systemNotesCheckbox" \/\>')
+		page_form = self.bsr.get_form()
+		page_form.add_field(event_argument_field)
+		page_form.add_field(event_target_field)
+		self.bsr.submit_form(page_form)
 		print (sr_url)
 		# TODO: add something regarding the javascript issue. Here is the 
 		# Relevant part of the page, and similar issue from stackoverflow that
