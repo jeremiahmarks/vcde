@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-05-12 19:28:29
-# @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-16 19:49:09
+# @Last Modified by:   Jeremiah Marks
+# @Last Modified time: 2017-05-16 22:28:52
 
 # This class exists because our website uses silly ajax for the
 # internal notes and robobrowser does not deal with it well.
@@ -12,6 +12,7 @@
 from selenium import webdriver
 import selenium
 from collections import defaultdict
+import bs4
 
 class SRScraper(object):
 	"""This class exists to scrape SR data"""
