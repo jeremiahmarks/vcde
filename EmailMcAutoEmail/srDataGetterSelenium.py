@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-12 19:28:29
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-16 22:28:52
+# @Last Modified time: 2017-05-16 22:30:24
 
 # This class exists because our website uses silly ajax for the
 # internal notes and robobrowser does not deal with it well.
@@ -12,7 +12,7 @@
 from selenium import webdriver
 import selenium
 from collections import defaultdict
-import bs4
+from bs4 import BeautifulSoup
 
 class SRScraper(object):
 	"""This class exists to scrape SR data"""
@@ -56,6 +56,7 @@ class SRScraper(object):
 		# Site Sub Area
 		# Date Opened
 		# ETAs and SLA data
+
 		key_value_solids = self.driver.find_elements_by_class_name("infoRow")
 		self.matched_data=defaultdict(list)
 		for eachKVPair in key_value_solids:
