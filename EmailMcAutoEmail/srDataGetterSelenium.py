@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-05-12 19:28:29
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-15 22:53:59
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-05-16 19:49:09
 
 # This class exists because our website uses silly ajax for the
 # internal notes and robobrowser does not deal with it well.
@@ -57,8 +57,12 @@ class SRScraper(object):
 		# ETAs and SLA data
 		key_value_solids = self.driver.find_elements_by_class_name("infoRow")
 		self.matched_data=defaultdict(list)
-		for eachKVPair in key_value_solids.find_elements_by_xpath(".//*"):
-			self.matched_data[eachKVPair[0]].append(eachKVPair[1])
+		for eachKVPair in key_value_solids:
+			try:
+				childs = eachKVPair.find_elements_by_xpath(".//*")
+				self.matched_data[childs[0].text].append(childs[1].text)
+			except Exception as e:
+				print(e)
 
 
 		# Description
@@ -72,3 +76,9 @@ class SRScraper(object):
 		self.connectionsession = self.driver.session_id
 		self.driver = webdriver.Remote(command_executor = self.connectionurl, desired_capabilities={})
 		self.driver.session_id = self.connectionsession
+
+	def connectTo(self, otherInstance):
+		connectionurl = otherInstance.driver.command_executor._url
+		connectionsession = otherInstance.driver.session_id
+		self.driver = webdriver.Remote(command_executor = connectionurl, desired_capabilities={})
+		self.driver.session_id = connectionsession
