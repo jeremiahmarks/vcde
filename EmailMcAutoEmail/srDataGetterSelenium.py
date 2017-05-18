@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author: jemarks
 # @Date:   2017-05-12 19:28:29
-# @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-16 22:30:24
+# @Last Modified by:   jemarks
+# @Last Modified time: 2017-05-17 18:37:57
 
 # This class exists because our website uses silly ajax for the
 # internal notes and robobrowser does not deal with it well.
@@ -21,9 +21,15 @@ class SRScraper(object):
 		self.driver = webdriver.Ie()
 		self.driver.maximize_window()
 		self.driver.implicitly_wait(60)
+		self.un = 'jemarks_sc'
+		self.pw = ''
 		
 
-	def login(self, username, password):
+	def login(self, username = None, password  = None):
+		if username is None:
+			username = self.un
+		if password is None:
+			password = self.pw
 		self.driver.get('https://myfsn.biz')
 		try:
 			element = self.driver.find_element_by_name('ctl00$ContentPlaceHolder1$tbxUname')
@@ -57,14 +63,23 @@ class SRScraper(object):
 		# Date Opened
 		# ETAs and SLA data
 
-		key_value_solids = self.driver.find_elements_by_class_name("infoRow")
-		self.matched_data=defaultdict(list)
-		for eachKVPair in key_value_solids:
-			try:
-				childs = eachKVPair.find_elements_by_xpath(".//*")
-				self.matched_data[childs[0].text].append(childs[1].text)
-			except Exception as e:
-				print(e)
+		# key_value_solids = self.driver.find_elements_by_class_name("infoRow")
+		# self.matched_data=defaultdict(list)
+		# for eachKVPair in key_value_solids:
+		# 	try:
+		# 		childs = eachKVPair.find_elements_by_xpath(".//*")
+		# 		self.matched_data[childs[0].text].append(childs[1].text)
+		# 	except Exception as e:
+		# 		print(e)
+
+		self.sr_soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+		self.info_rows = self.sr_soup.find_all(attrs = {"class":"infoRow"})
+		self.matched_data = defaultdict(list)
+		for eachrow in self.info_rows:
+			if (eachrow.find(attrs = {'class':'fieldLabel'})) and (eachrow.find(attrs = {'class':'fieldValue'})):
+				leftside = eachrow.find(attrs = {'class':'fieldLabel'}).text
+				rightside = eachrow.find(attrs = {'class':'fieldValue'}).text
+				self.matched_data[leftside].append(rightside)
 
 
 		# Description
