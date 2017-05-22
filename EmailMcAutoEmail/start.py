@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-08 19:13:05
+# @Last Modified time: 2017-05-22 11:18:05
 
 import glob
 import datetime
@@ -19,10 +19,18 @@ from auto_settings import settings
 fileSearchString = "\\\\bos-mart.ip-tech.com\\FSNPublishedReports\\ITDevelopment\\Petsmart_Backstop_*"
 strpFormatString = "\\\\bos-mart.ip-tech.com\\FSNPublishedReports\\ITDevelopment\\Petsmart_Backstop_%m-%d-%Y_at_%H.%M.xlsx"
 
+
+
+
 home_dir = os.path.expanduser('~')
-vixxoUploadDirectory = os.path.join(home_dir, 'surveyMagic')
-if not os.path.exists(vixxoUploadDirectory):
-	os.makedirs(vixxoUploadDirectory)
+BS_Folder = os.path.join(home_dir, 'BS_report')
+if not os.path.exists(BS_Folder):
+	os.makedirs(BS_Folder)
+
+curFileName = os.path.join(BS_Folder, "OO_current_bs.xlsx")
+
+colsInOrder = ["SR #", "Date Opened", "Days Since Open", "Priority", "SR Substatus", "SR Short Description", "LOS", "Site Area", "City", "State", "Site #", "SC Name", "TL", "SR/Activity Last Update "]
+
 
 def getNewestFile():
 	#This will return a list of dicts, basically like
@@ -34,9 +42,21 @@ def getNewestFile():
 		if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
 			newestFile = eachfile
 
-	surveysFile = pandas.read_excel(newestFile, sheetname=1).to_dict(orient='records')
+	bs_file = pandas.read_excel(newestFile, sheetname=1).to_dict(orient='records')
 
-	return [row for row in surveysFile if row['TL'] == settings['TL']]
+	uneditedfile = pandas.DataFrame([row for row in bs_file if row['TL'] == settings['TL']])
+	uneditedfile.to_excel(curFileName, columns=colsInOrder, index=False)
+	print(curFileName)
+
+
+def getSpecificFile(filename):
+	"""This method exists to get a specific file. This will be handy when
+	checking for when the file is updated. 
+	"""
+
+	bs_file = pandas.read_excel(filename, sheetname=1).to_dict(orient='records')
+	bs_filename = os.path.basename(filename)
+	local_bs_file_path = os.path.join()
 
 def no_eta(rowofdata):
 	"""This method accepts a row of data which is
