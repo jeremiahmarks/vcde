@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-22 19:20:58
+# @Last Modified time: 2017-05-22 19:25:11
 
 import glob
 import datetime
@@ -78,19 +78,7 @@ def getSpecificFile(filename):
 	print("Saved to " + str(local_bs_file_path))
 	return local_bs_file_path
 
-def no_eta(rowofdata):
-	"""This method accepts a row of data which is
-	in the no eta substatus, and then does something
-	with it. 
-	"""
-	scnumber=rowofdata['SC Number']
-	dateopened = rowofdata['Date Opened'].to_pydatetime()
-	lastUpdated = rowofdata['SR/Activity Last Update '].to_pydatetime()
 
-def getmyfsndata(SRNumber):
-	driver = webdriver.Ie()
-	driver.maximize_window()
-	
 
 def main():
 	while True:
