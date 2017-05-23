@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-22 11:18:05
+# @Last Modified time: 2017-05-22 19:15:15
 
 import glob
 import datetime
@@ -48,6 +48,21 @@ def getNewestFile():
 	uneditedfile.to_excel(curFileName, columns=colsInOrder, index=False)
 	print(curFileName)
 
+def newer_file_exists():
+	#This will return a list of dicts, basically like
+	#using csv.DictReader to read into a list.
+	matchingFiles = glob.glob(fileSearchString)
+
+	newestFile = matchingFiles[0]
+	for eachfile in matchingFiles:
+		if datetime.datetime.strptime(eachfile, strpFormatString) > datetime.datetime.strptime(newestFile, strpFormatString):
+			newestFile = eachfile
+	newestFileName = os.path.basename(newestFile)
+	newestFileFullPath = os.path.join(BS_Folder, newestFileName)
+	if not (os.path.exists(newestFileFullPath)):
+		return newestFile
+	return None
+
 
 def getSpecificFile(filename):
 	"""This method exists to get a specific file. This will be handy when
@@ -55,8 +70,12 @@ def getSpecificFile(filename):
 	"""
 
 	bs_file = pandas.read_excel(filename, sheetname=1).to_dict(orient='records')
+	bs_local_file = pandas.DataFrame([x for x in bs_file]) #This is added because I was sorting things at this stage.
 	bs_filename = os.path.basename(filename)
-	local_bs_file_path = os.path.join()
+	local_bs_file_path = os.path.join(BS_Folder, bs_filename)
+	bs_local_file.to_excel(local_bs_file_path, columns=colsInOrder, index=False)
+	print("Saved to " + str(local_bs_file_path))
+	return local_bs_file_path
 
 def no_eta(rowofdata):
 	"""This method accepts a row of data which is
