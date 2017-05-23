@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-22 19:15:15
+# @Last Modified time: 2017-05-22 19:20:58
 
 import glob
 import datetime
@@ -12,6 +12,7 @@ import urllib
 import subprocess
 from selenium import webdriver
 import selenium
+import time
 
 from auto_settings import settings
 
@@ -91,6 +92,15 @@ def getmyfsndata(SRNumber):
 	driver.maximize_window()
 	
 
+def main():
+	while True:
+		new_file = newer_file_exists()
+		if new_file:
+			print("Getting new file!")
+			getSpecificFile(new_file)
+		else:
+			print("Nothing to get.")
+		time.sleep(300)
 
 if __name__ == '__main__':
-	print(getNewestFile())
+	main()
