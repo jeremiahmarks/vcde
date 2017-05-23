@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-22 19:25:11
+# @Last Modified time: 2017-05-22 19:54:46
 
 import glob
 import datetime
@@ -85,9 +85,11 @@ def main():
 		new_file = newer_file_exists()
 		if new_file:
 			print("Getting new file!")
+			print(time.strftime('%H%M%S'))
 			getSpecificFile(new_file)
 		else:
 			print("Nothing to get.")
+			print(time.strftime('%H%M%S'))
 		time.sleep(300)
 
 if __name__ == '__main__':
