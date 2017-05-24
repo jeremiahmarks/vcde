@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-23 11:30:06
+# @Last Modified time: 2017-05-24 15:32:56
 
 import glob
 import datetime
@@ -75,7 +75,7 @@ def getSpecificFile(filename):
 	bs_local_file = pandas.DataFrame([x for x in bs_file]) #This is added because I was sorting things at this stage.
 	bs_filename = os.path.basename(filename)
 	local_bs_file_path = os.path.join(BS_Folder, bs_filename)
-	bs_local_file.to_excel(local_bs_file_path, columns=colsInOrder, index=False)
+	bs_local_file.to_excel(local_bs_file_path, index=False)
 	print("Saved to " + str(local_bs_file_path))
 	return local_bs_file_path
 
@@ -85,15 +85,35 @@ def email_Travers(local_file):
 	criticals = pandas.DataFrame([row for row in localData if (row['TL'] == "JTRAVERS" and row['Priority'] == "Critical")]).sort_values(by="Days Since Open")
 	local_dir = os.path.dirname(local_file)
 	origFile = os.path.basename(local_file)
-	travers_filename = origFile[:origFile.rfind('.')] + 'JTRAV' + origFile[origFile.rfind('.'):]
+	travers_filename = 'JTRAV' + origFile[:origFile.rfind('.')] + origFile[origFile.rfind('.'):]
 	travers_fullpath = os.path.join(local_dir, travers_filename)
 	travers_file.to_excel(travers_fullpath, columns=colsInOrder, index=False)
 	toAddresses = "Jennifer.Travers@vixxo.com; Devon.Mix@vixxo.com; Michael.Lugo@vixxo.com; Jeremiah.Marks@vixxo.com"
 	# toAddresses = "Jeremiah.Marks@vixxo.com"
-	subject = "Most recent BS report"
-	HTMLBody = criticals.to_html(index=False)
+	subject = "Most recent BackStop report"
+	HTMLBody = criticals.to_html(index=False, columns=colsInOrder)
+	HTMLBody = "<p>There are currently " + str(len(travers_file)) + " SRs for your team in the BackStop Report.</p></br></br> <p>More Details to come.</p></br>" + HTMLBody
 	attachments = [travers_fullpath, local_file]
 	send_email(toAddresses, subject, HTMLBody, attachments=attachments)
+
+
+def email_LZ(local_file):
+	localData = pandas.read_excel(local_file).to_dict(orient='records')
+	lelz_file = pandas.DataFrame([row for row in localData if row['TL'] == "LELZIE"])
+	criticals = pandas.DataFrame([row for row in localData if (row['TL'] == "LELZIE" and row['Priority'] == "Critical")]).sort_values(by="Days Since Open")
+	local_dir = os.path.dirname(local_file)
+	origFile = os.path.basename(local_file)
+	lelz_filename = 'LELZ' + origFile[:origFile.rfind('.')] + origFile[origFile.rfind('.'):]
+	lelz_fullpath = os.path.join(local_dir, lelz_filename)
+	lelz_file.to_excel(lelz_fullpath, columns=colsInOrder, index=False)
+	toAddresses = "Laron.Elzie@vixxo.com; Nathan.Wu@vixxo.com; Kyle.Buggs@vixxo.com; Jeremiah.Marks@vixxo.com"
+	# toAddresses = "Jeremiah.Marks@vixxo.com"
+	subject = "Most recent BackStop report"
+	HTMLBody = criticals.to_html(index=False, columns=colsInOrder)
+	HTMLBody = "<p>There are currently " + str(len(lelz_file)) + " SRs for your team in the BackStop Report.</p></br></br> <p>More Details to come.</p></br>" + HTMLBody
+	attachments = [lelz_fullpath, local_file]
+	send_email(toAddresses, subject, HTMLBody, attachments=attachments)
+
 
 def send_email(toAddresses, Subject, HTMLBody, textBody='', attachments=[]):
 	outlook = win32.Dispatch('outlook.application')
@@ -108,17 +128,22 @@ def send_email(toAddresses, Subject, HTMLBody, textBody='', attachments=[]):
 
 def main():
 	while True:
-		new_file = newer_file_exists()
-		if new_file:
-			print("Getting new file!")
-			print(time.strftime('%H%M%S'))
-			local_file = getSpecificFile(new_file)
-			email_Travers(local_file)
+		try:
+			new_file = newer_file_exists()
+			if new_file:
+				print("Getting new file!")
+				print(time.strftime('%H%M%S'))
+				local_file = getSpecificFile(new_file)
+				email_Travers(local_file)
+				email_LZ(local_file)
 
-		else:
-			print("Nothing to get.")
-			print(time.strftime('%H%M%S'))
-		time.sleep(300)
+			else:
+				print("Nothing to get.")
+				print(time.strftime('%H%M%S'))
+		except Exception:
+			print(str(Exception))
+		finally:	
+			time.sleep(300)
 
 if __name__ == '__main__':
 	main()
