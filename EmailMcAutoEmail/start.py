@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-22 19:54:46
+# @Last Modified time: 2017-05-23 11:30:06
 
 import glob
 import datetime
@@ -13,6 +13,7 @@ import subprocess
 from selenium import webdriver
 import selenium
 import time
+import win32com.client as win32
 
 from auto_settings import settings
 
@@ -78,7 +79,32 @@ def getSpecificFile(filename):
 	print("Saved to " + str(local_bs_file_path))
 	return local_bs_file_path
 
+def email_Travers(local_file):
+	localData = pandas.read_excel(local_file).to_dict(orient='records')
+	travers_file = pandas.DataFrame([row for row in localData if row['TL'] == "JTRAVERS"])
+	criticals = pandas.DataFrame([row for row in localData if (row['TL'] == "JTRAVERS" and row['Priority'] == "Critical")]).sort_values(by="Days Since Open")
+	local_dir = os.path.dirname(local_file)
+	origFile = os.path.basename(local_file)
+	travers_filename = origFile[:origFile.rfind('.')] + 'JTRAV' + origFile[origFile.rfind('.'):]
+	travers_fullpath = os.path.join(local_dir, travers_filename)
+	travers_file.to_excel(travers_fullpath, columns=colsInOrder, index=False)
+	toAddresses = "Jennifer.Travers@vixxo.com; Devon.Mix@vixxo.com; Michael.Lugo@vixxo.com; Jeremiah.Marks@vixxo.com"
+	# toAddresses = "Jeremiah.Marks@vixxo.com"
+	subject = "Most recent BS report"
+	HTMLBody = criticals.to_html(index=False)
+	attachments = [travers_fullpath, local_file]
+	send_email(toAddresses, subject, HTMLBody, attachments=attachments)
 
+def send_email(toAddresses, Subject, HTMLBody, textBody='', attachments=[]):
+	outlook = win32.Dispatch('outlook.application')
+	surveysEmail = outlook.CreateItem(0)
+	surveysEmail.To = toAddresses
+	surveysEmail.Subject = Subject
+	surveysEmail.Body = textBody
+	surveysEmail.HTMLBody = HTMLBody
+	for each_attachment in attachments:
+		surveysEmail.Attachments.Add(each_attachment)
+	surveysEmail.Send()
 
 def main():
 	while True:
@@ -86,7 +112,9 @@ def main():
 		if new_file:
 			print("Getting new file!")
 			print(time.strftime('%H%M%S'))
-			getSpecificFile(new_file)
+			local_file = getSpecificFile(new_file)
+			email_Travers(local_file)
+
 		else:
 			print("Nothing to get.")
 			print(time.strftime('%H%M%S'))
