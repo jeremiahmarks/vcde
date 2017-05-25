@@ -23,4 +23,11 @@ the installer for Python 3.6+ and 64-bit Windows.
 * Make modular.  Basically make it to where it uses a popopen to run the process to send emails so that I can update the code on the fly.
 * Include stats.  Service provider stats. SRs closed. All the stats.  Include them. 
 * Make reusable - basically the fact that I copy/pasted that module in Email/start.py was an indication that I should have made it reusable. 
-
+* Make a module to compare backstop reports over time, so that one can see what happened.
+* Maybe add visuals/Animations for pretty things. 
+* format the table html
+* limit the table to the top items
+* get a list of unfriendly statuses
+* use unfriendly statuses to generate reporting
+* add other teams
+* add points. 
