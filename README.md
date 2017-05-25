@@ -16,3 +16,11 @@ the installer for Python 3.6+ and 64-bit Windows.
 * Open a command prompt (Win+r -> cmd -> run )
 * Run the command `pip install google-api-python-client`
 * Run the command 
+
+
+*TODO*
+
+* Make modular.  Basically make it to where it uses a popopen to run the process to send emails so that I can update the code on the fly.
+* Include stats.  Service provider stats. SRs closed. All the stats.  Include them. 
+* Make reusable - basically the fact that I copy/pasted that module in Email/start.py was an indication that I should have made it reusable. 
+
