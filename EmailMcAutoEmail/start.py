@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-08 17:40:30
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-25 11:06:40
+# @Last Modified time: 2017-05-26 11:07:40
 
 import glob
 import datetime
@@ -70,6 +70,19 @@ def newer_file_exists():
 		return newestFile
 	return None
 
+def getLocalFilesSortedByDateTimeInName():
+	matchingFiles = glob.glob(os.path.join(BS_Folder, fileSearchString))
+	matchingFiles.sort(key=lambda x: datetime.datetime.strptime(x, os.path.join(BS_Folder, strpFormatString)), reverse=True)
+	return matchingFiles
+
+def compareTwoSRs(path_to_first_bs, path_to_second_bs):
+	"""This path will accept two backstop reports and compare them
+	returning stats such as the number of SRs which have moved, both
+	onto and off of the report. Additionally it will provide stats of
+	negative SR statuses. 
+	"""
+	pass
+	
 
 def getSpecificFile(filename):
 	"""This method exists to get a specific file. This will be handy when
@@ -93,7 +106,7 @@ def email_Travers(local_file):
 	travers_filename = 'JTRAV' + origFile[:origFile.rfind('.')] + origFile[origFile.rfind('.'):]
 	travers_fullpath = os.path.join(local_dir, travers_filename)
 	travers_file.to_excel(travers_fullpath, columns=colsInOrder, index=False)
-	toAddresses = "Jennifer.Travers@vixxo.com; Devon.Mix@vixxo.com; Michael.Lugo@vixxo.com; Jeremiah.Marks@vixxo.com"
+	toAddresses = "Jennifer.Travers@vixxo.com; Devon.Mix@vixxo.com; Michael.Lugo@vixxo.com; Jeremiah.Marks@vixxo.com; Monica.Whiteside@vixxo.com"
 	# toAddresses = "Jeremiah.Marks@vixxo.com"
 	subject = "Most recent BackStop report"
 	HTMLBody = criticals.to_html(index=False, columns=colsInOrder)
