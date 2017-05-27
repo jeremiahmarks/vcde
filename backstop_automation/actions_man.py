@@ -2,25 +2,14 @@
 # @Author: jemarks
 # @Date:   2017-05-26 20:37:38
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-27 02:01:32
+# @Last Modified time: 2017-05-27 02:33:34
 
 # This file will house all of the various actions to take when there is a new file
 
 import file_man
+import petm_teams
 
 
-teams = {}
-teams['JTRAVERS'] = []
-teams['JTRAVERS'].append('Jennifer.Travers@vixxo.com')
-teams['JTRAVERS'].append('Devon.Mix@vixxo.com')
-teams['JTRAVERS'].append('Michael.Lugo@vixxo.com')
-teams['JTRAVERS'].append('Jeremiah.Marks@vixxo.com')
-
-teams['LELZIE'] = []
-teams['LELZIE'].append('Laron.Elzie@vixxo.com')
-teams['LELZIE'].append('Kyle.Buggs@vixxo.com')
-teams['LELZIE'].append('Robert.Cottrell@vixxo.com')
-teams['LELZIE'].append('Nathan.Wu@vixxo.com')
 
 negative_statuses=["No ETA", "Quote Required", "Quote Received", "New ETA Required", "No Time Out", "Job Not Complete", "Quoted - Approved by Customer", "Unassigned", "Assigned to Service Contractor"]
 
@@ -58,21 +47,24 @@ def new_file(local_file):
 	
 	last_backstop = file_man.get_previous_backstop(local_file)
 
-
+def get_report_stats(report, team_lead=False):
+	report_data = pandas.read_excel(report, sheetname=1)
+	grouped_by_tl = report_data.groupby('TL')
+	overview_scope_all = collect_stats_on_group(report_data)
 
 def collect_stats_on_group(dataframe_of_srs):
 	# Okay, look, I want the same basic data on several different subsets
 	# of data. There was not a pretty way to do this. 
 	total_srs = len(dataframe_of_srs)
 	oldest_sr = dataframe_of_srs[dataframe_of_srs['Date Opened'] == dataframe_of_srs['Date Opened'].min()]
-	oldest_sr_date = oldest_sr['Date Opened'][0]
-	oldest_sr_number = oldest_sr['SR #'][0]
+	oldest_sr_date = oldest_sr['Date Opened'].values[0]
+	oldest_sr_number = oldest_sr['SR #'].values[0]
 	deadest_sr = dataframe_of_srs[dataframe_of_srs['SR/Activity Last Update '] == dataframe_of_srs['SR/Activity Last Update '].min()]
-	deadest_sr_date = deadest_sr['SR/Activity Last Update '][0]
-	deadest_sr_number = deadest_sr['SR #'][0]
+	deadest_sr_date = deadest_sr['SR/Activity Last Update '].values[0]
+	deadest_sr_number = deadest_sr['SR #'].values[0]
 	negative_srs = dataframe_of_srs[dataframe_of_srs['SR Substatus'].isin(negative_statuses)]
 	total_negative = len(negative_srs)
-	negative_search_string = ' OR '.join([x for x in total_negative['SR #']])
+	negative_search_string = ' OR '.join([x for x in negative_srs['SR #']])
 	return(total_srs, oldest_sr_date, oldest_sr_number, deadest_sr_date, deadest_sr_number, total_negative, negative_search_string)
 
 
