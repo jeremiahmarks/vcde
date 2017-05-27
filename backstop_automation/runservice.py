@@ -2,9 +2,13 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:20:32
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-26 18:41:21
+# @Last Modified time: 2017-05-26 18:43:22
 
 import time
+
+from . import file_man
+from . import actions_man
+from . import mouse_man
 
 def main():
 	while True:
