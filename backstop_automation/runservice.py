@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:20:32
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-26 21:03:04
+# @Last Modified time: 2017-05-26 22:03:32
 
 import time
 import ctypes
@@ -30,7 +30,9 @@ def main():
 		except Exception as e:
 			print(e)
 		finally:
-			time.sleep(300)
+			for cycle in range(10):
+				print(str(300 - (cycle*30)) + " seconds left")
+				time.sleep(30)
 
 if __name__ == '__main__':
 	main()
