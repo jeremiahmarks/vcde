@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:42:49
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-26 21:36:53
+# @Last Modified time: 2017-05-26 21:57:45
 
 # Methods I currently am using elsewhere
 # file_man.check_for_new()
@@ -35,6 +35,7 @@ def check_for_new():
 	# path to the file. If there is not it will 
 	# return None
 	newest_file = get_remote_files()[0]
+	# print(newest_file, "fileman1")
 	newest_file_name = os.path.basename(newest_file)
 	newest_file_local_path = os.path.join(BS_Folder, newest_file_name)
 	if not (os.path.exists(newest_file_local_path)):
@@ -47,5 +48,15 @@ def get_specific_file(file_path):
 	local_file_name = os.path.basename(file_path)
 	local_file_path = os.path.join(BS_Folder, local_file_name)	
 	shutil.copyfile(file_path, local_file_path)
+	return local_file_path
 
 
+def get_previous_backstop(local_file_path):
+	"""This method will accept the path to an SR and then find the SR immediatly 
+	before it."""
+	local_files = get_local_files()
+	if local_file_path in local_files:
+		next_file_location = local_files.index(local_file_path) + 1
+		if next_file_location >= len(local_files):
+			return None
+		return local_files[next_file_location] 
