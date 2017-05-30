@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 20:37:38
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-27 02:33:34
+# @Last Modified time: 2017-05-29 18:33:37
 
 # This file will house all of the various actions to take when there is a new file
 
@@ -51,6 +51,17 @@ def get_report_stats(report, team_lead=False):
 	report_data = pandas.read_excel(report, sheetname=1)
 	grouped_by_tl = report_data.groupby('TL')
 	overview_scope_all = collect_stats_on_group(report_data)
+	overview_scope_all_critical = collect_stats_on_group(data[data['Priority'] == "Critical"])
+	overview_scope_tls = {}
+	overview_scope_tls_critical = {}
+	for tl in grouped_by_tl:
+		srs_for_tl = grouped_by_tl.get_group(tl[0])
+		overview_scope_tls[tl[0]] = collect_stats_on_group(srs_for_tl)
+		overview_scope_tls_critical[tl[0]] = collect_stats_on_group(srs_for_tl[srs_for_tl['Priority'] == 'Critical'])
+	return overview_scope_all, overview_scope_all_critical, overview_scope_tls, overview_scope_tls_critical
+
+
+
 
 def collect_stats_on_group(dataframe_of_srs):
 	# Okay, look, I want the same basic data on several different subsets
@@ -65,6 +76,12 @@ def collect_stats_on_group(dataframe_of_srs):
 	negative_srs = dataframe_of_srs[dataframe_of_srs['SR Substatus'].isin(negative_statuses)]
 	total_negative = len(negative_srs)
 	negative_search_string = ' OR '.join([x for x in negative_srs['SR #']])
+	grouped_by_sc = dataframe_of_srs.groupby('SC Number')
+	# sc_data = []
+	# if len(grouped_by_sc) > 1:
+	# 	for each_sc in grouped_by_sc:
+	# 		sc_data.append(each_sc)
+	# 		# sc_data.append(collect_stats_on_group(grouped_by_sc.get_group(each_sc))
 	return(total_srs, oldest_sr_date, oldest_sr_number, deadest_sr_date, deadest_sr_number, total_negative, negative_search_string)
 
 
