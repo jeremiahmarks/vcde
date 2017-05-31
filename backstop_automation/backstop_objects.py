@@ -2,9 +2,21 @@
 # @Author: Jeremiah
 # @Date:   2017-05-26 23:27:33
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-30 21:31:04
-import datetime
+# @Last Modified time: 2017-05-31 08:00:26
+
+
 #This file exists in order to provider some basic objects for SRs, SPs, Stores, and backstop reports.
+
+
+import datetime
+import os
+
+
+sftp_format_string = "Petsmart_Backstop_%m-%d-%Y_at_%H.%M.xlsx"
+
+colsInOrder = ["SR #", "Date Opened", "Days Since Open", "Priority", "SR Substatus", "SR Short Description", "LOS", "Site Area", "City", "State", "Site #", "SC Name", "TL", "SR/Activity Last Update "]
+
+
 
 class ServiceRequest(object):
 	"""docstring for ServiceRequest"""
@@ -33,3 +45,25 @@ class ServiceRequest(object):
 			return otherobject.sr == self.sr
 
 
+class BackStopReport(object):
+	"""docstring for BackStopReport"""
+	def __init__(self, path):
+		super(BackStopReport, self).__init__()
+		self.path = path
+		self.srs = {}
+		self.backstop_timestamp = datetime.datetime.strptime(os.path.basename(self.path), sftp_format_string)
+
+	def load(self):
+		self.raw_file = pandas.read_excel(self.path, sheetname=1).to_dict(orient='records')
+		for record in self.raw_file:
+			self.srs[record['SR #']] = ServiceRequest(record, self.backstop_timestamp)
+
+	def compare(self, previous_backstop, further_backstops=[]):
+		mysrs = list(self.srs.keys())
+		previous_srs = list(previous_backstop)
+
+
+
+
+
+		
