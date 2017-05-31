@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-05-26 23:27:33
 # @Last Modified by:   Jeremiah Marks
-# @Last Modified time: 2017-05-26 23:46:02
+# @Last Modified time: 2017-05-30 21:31:04
 import datetime
 #This file exists in order to provider some basic objects for SRs, SPs, Stores, and backstop reports.
 
@@ -25,5 +25,11 @@ class ServiceRequest(object):
 		self.nte = line_of_data["NTE"]
 		self.ot = line_of_data['Overtime Allowed ']
 		self.backstop_timestamp = bs_ts
+
+	def __eq__(self, otherobject):
+		if (type(otherobject) == type(" ")):
+			return otherobject == self.sr
+		else:
+			return otherobject.sr == self.sr
 
 
