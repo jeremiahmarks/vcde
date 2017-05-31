@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:42:49
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-26 21:57:45
+# @Last Modified time: 2017-05-30 11:17:17
 
 # Methods I currently am using elsewhere
 # file_man.check_for_new()
@@ -50,6 +50,10 @@ def get_specific_file(file_path):
 	shutil.copyfile(file_path, local_file_path)
 	return local_file_path
 
+def get_time_stamp(file_path):
+	filename = os.path.basename(file_path)
+	timeStamp = datetime.datetime.strptime(filename, sftp_format_string)
+	return timeStamp
 
 def get_previous_backstop(local_file_path):
 	"""This method will accept the path to an SR and then find the SR immediatly 
