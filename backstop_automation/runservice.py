@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:20:32
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-26 22:03:32
+# @Last Modified time: 2017-05-31 17:03:46
 
 import time
 import ctypes
@@ -17,6 +17,8 @@ def is_locked():
 	return user.GetForegroundWindow() == 0
 
 def main():
+	print("Getting remote files")
+	file_man.get_all_remote_files()
 	while True:
 		try:
 			print("Checking")
