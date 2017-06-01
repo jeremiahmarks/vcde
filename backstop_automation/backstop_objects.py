@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-05-26 23:27:33
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-31 11:05:21
+# @Last Modified time: 2017-05-31 20:13:15
 
 
 #This file exists in order to provider some basic objects for SRs, SPs, Stores, and backstop reports.
@@ -14,6 +14,7 @@ import pandas
 import collections
 from petm_teams import teams
 from emails import team_email
+import file_man
 
 sftp_format_string = "Petsmart_Backstop_%m-%d-%Y_at_%H.%M.xlsx"
 
@@ -55,6 +56,7 @@ class BackStopReport(object):
 		self.path = path
 		self.srs = {}
 		self.backstop_timestamp = datetime.datetime.strptime(os.path.basename(self.path), sftp_format_string)
+		self.jdate = file_man.get_julian_stamp(self.path)
 		self.load()
 
 	def load(self):
