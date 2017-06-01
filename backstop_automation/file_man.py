@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:42:49
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-30 11:17:17
+# @Last Modified time: 2017-05-31 17:05:46
 
 # Methods I currently am using elsewhere
 # file_man.check_for_new()
@@ -30,6 +30,17 @@ def get_remote_files():
 def get_local_files():
 	return sorted(glob.glob(os.path.join(BS_Folder, file_search_string)), key = lambda x: datetime.datetime.strptime(x, os.path.join(BS_Folder, sftp_format_string)), reverse=True)
 
+def get_all_remote_files():
+	remote_files = sorted(glob.glob(os.path.join(remote_directory, file_search_string)), key = lambda x: datetime.datetime.strptime(x, os.path.join(remote_directory, sftp_format_string)), reverse=True)
+	needed_files = []
+	for eachfile in remote_files:
+		file_name = os.path.basename(eachfile)
+		local_file_name = os.path.join(BS_Folder, file_name)
+		if not(os.path.exists(local_file_name)):
+			needed_files.append(eachfile)
+	for each_file in needed_files:
+		get_specific_file(each_file)
+		
 def check_for_new():
 	# If there is a new file, this will return the
 	# path to the file. If there is not it will 
