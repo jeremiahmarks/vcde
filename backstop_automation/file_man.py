@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 18:42:49
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-31 17:05:46
+# @Last Modified time: 2017-05-31 19:22:37
 
 # Methods I currently am using elsewhere
 # file_man.check_for_new()
@@ -40,7 +40,7 @@ def get_all_remote_files():
 			needed_files.append(eachfile)
 	for each_file in needed_files:
 		get_specific_file(each_file)
-		
+
 def check_for_new():
 	# If there is a new file, this will return the
 	# path to the file. If there is not it will 
@@ -65,6 +65,11 @@ def get_time_stamp(file_path):
 	filename = os.path.basename(file_path)
 	timeStamp = datetime.datetime.strptime(filename, sftp_format_string)
 	return timeStamp
+
+def get_julian_stamp(file_path):
+	filename = os.path.basename(file_path)
+	timestamp = datetime.datetime.strftime(datetime.datetime.strptime(filename, sftp_format_string), '%y%j%H%M')
+	return int(timestamp)
 
 def get_previous_backstop(local_file_path):
 	"""This method will accept the path to an SR and then find the SR immediatly 
