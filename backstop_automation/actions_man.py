@@ -2,7 +2,7 @@
 # @Author: jemarks
 # @Date:   2017-05-26 20:37:38
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-30 18:35:26
+# @Last Modified time: 2017-05-31 15:57:50
 
 # This file will house all of the various actions to take when there is a new file
 
@@ -48,10 +48,15 @@ def new_file(local_file):
 
 	# Lets start by getting the other files we will need.
 	
-	last_backstop = file_man.get_previous_backstop(local_file)
-	srs_all, srs_crits, srs_tl, srs_tl_crits = get_report_stats(local_file)
-	for each_tl in srs_tl:
-		html_body = team_email.body(srs_all, srs_crits, srs_tl[each_tl], srs_tl_crits[each_tl])
+	last_backstop = backstop_objects.BackStopReport(file_man.get_previous_backstop(local_file))
+	this_backstop = backstop_objects.BackStopReport(local_file)
+	stats_all, stats_crits, stats_tl, crits_tl = this_backstop.compare(last_backstop)
+	html_overview_table = team_email.overviewTable(stats_all, stats_crits, stats_tl, crits_tl)
+	for each_tl in stats_tl:
+		html_body = team_email.greeting(each_tl, len(stats_tl[each_tl].continued) + len(stats_tl[each_tl].new), len(stats_tl[each_tl].new), len(stats_tl[each_tl].closed), len(crits_tl[each_tl].continued) + len(crits_tl[each_tl].new), len(crits_tl[each_tl].new), len(crits_tl[each_tl].closed))
+		html_body += "</br>"
+		html_body += html_overview_table
+		html_body += "</br>"
 		# toaddresses = ';'.join(petm_teams.teams[each_tl])
 		toaddresses = 'jeremiah.marks@vixxo.com'
 		subject = "Backstop Report for " + each_tl + " " + str(file_man.get_time_stamp(local_file))
