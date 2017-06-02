@@ -2,7 +2,7 @@
 # @Author: Jeremiah
 # @Date:   2017-05-29 19:35:43
 # @Last Modified by:   jemarks
-# @Last Modified time: 2017-05-31 18:11:57
+# @Last Modified time: 2017-06-02 10:07:58
 
 
 def body(all_stats, all_crits, tl_stats, tl_crits):
@@ -42,9 +42,9 @@ def get_searh_strings(stats, title=None):
 def overviewTable(stats_all, stats_crits, stats_tl, crits_tl):
 	html_table = "<table>"
 	html_table += get_row("TL", "Total SRs on BS", "SRs carried over", "SRs added", "SRs closed", "Criticals", "Criticals continued", "Criticals added", "Criticals closed")
-	html_table += get_row("Total", len(stats_all.continued) + len(stats_all.new), len(stats_all.continued), len(stats_all.new), len(stats_all.closed), len(stats_crits.continued) + len(stats_crits.new), len(stats_crits.continued), len(stats_crits.new), len(stats_crits.closed))
 	for team_lead in stats_tl:
 		html_table += get_row(team_lead, len(stats_tl[team_lead].continued) + len(stats_tl[team_lead].new), len(stats_tl[team_lead].continued), len(stats_tl[team_lead].new), len(stats_tl[team_lead].closed), len(crits_tl[team_lead].continued) + len(crits_tl[team_lead].new), len(crits_tl[team_lead].continued), len(crits_tl[team_lead].new), len(crits_tl[team_lead].closed))
+	html_table += get_row("Total", len(stats_all.continued) + len(stats_all.new), len(stats_all.continued), len(stats_all.new), len(stats_all.closed), len(stats_crits.continued) + len(stats_crits.new), len(stats_crits.continued), len(stats_crits.new), len(stats_crits.closed))
 	html_table += "</table>"
 	return html_table
 
